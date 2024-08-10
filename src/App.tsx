@@ -1,38 +1,26 @@
 // src/App.tsx
 import React, { useState } from 'react';
-import './App.css';
+import Header from './Components/header';
+import Sidebar from './Components/Sidebar';
 
 const App: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const handleMenuClick = () => {
+    setSidebarOpen(true);
+  };
+
+  const handleCloseSidebar = () => {
+    setSidebarOpen(false);
   };
 
   return (
-    <div className="app">
-      <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-        <button className="toggle-button" onClick={toggleSidebar}>
-          {isSidebarOpen ? '←' : '→'}
-        </button>
-        <ul>
-          <li>Barra Vertical</li>
-          <li>Navegación</li>
-          <li>Ligas</li>
-          <li>Juegos de Hoy</li>
-          <li>Search</li>
-          <li>Sign In</li>
-        </ul>
-      </div>
+    <div>
+      <Header onMenuClick={handleMenuClick} />
+      <Sidebar isOpen={isSidebarOpen} onClose={handleCloseSidebar} />
       <div className="content">
-        <div className="header">
-          <h1>Juegos Destacados</h1>
-        </div>
-        <div className="news-section">
-          <h2>News</h2>
-          {/* Aquí va el contenido de las noticias */}
-        </div>
-        {/* Añadir más secciones según sea necesario */}
+        {/* Aquí puedes añadir el contenido de tu aplicación */}
+        <h1>Aqui van la news</h1>
       </div>
     </div>
   );
