@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAllLeagues, fetchLeagueBadge, fetchLeagueDetails, fetchRecentMatches, fetchTeamsByLeague } from '../Services/api';
-import './LeaguesCarousel.css'; 
+import { fetchAllLeagues, fetchLeagueBadge, fetchLeagueDetails, fetchRecentMatches, fetchUpcomingMatches, fetchTeamsByLeague, fetchStandings } from '../Services/api';
+import './LeaguesCarousel.css';
 
 interface League {
     idLeague: string;
     strLeague: string;
     strSport: string;
-    strBadge: string; 
+    strBadge: string;
 }
 
 interface LeagueDetails extends League {
@@ -29,7 +29,9 @@ const LeaguesCarousel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [selectedLeague, setSelectedLeague] = useState<LeagueDetails | null>(null);
     const [recentMatches, setRecentMatches] = useState<any[]>([]);
-    const [teams, setTeams] = useState<Team[]>([]); // Estado para los equipos
+    const [upcomingMatches, setUpcomingMatches] = useState<any[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
+    const [standings, setStandings] = useState<any[]>([]); // Define el tipo adecuado para las posiciones
 
     useEffect(() => {
         const getLeaguesData = async () => {
@@ -37,7 +39,7 @@ const LeaguesCarousel: React.FC = () => {
                 const data = await fetchAllLeagues();
                 if (data && data.leagues) {
                     const footballLeagues = data.leagues.filter((league: League) => league.strSport === "Soccer");
-                    
+
                     const leaguesWithBadge = await Promise.all(
                         footballLeagues.map(async (league: League) => {
                             const badge = await fetchLeagueBadge(league.strLeague);
@@ -47,7 +49,7 @@ const LeaguesCarousel: React.FC = () => {
                             return null;
                         })
                     );
-                    
+
                     const filteredLeagues = leaguesWithBadge.filter((league: League | null) => league !== null) as League[];
                     setLeagues(filteredLeagues);
                     setError(null);
@@ -71,13 +73,22 @@ const LeaguesCarousel: React.FC = () => {
             if (details) {
                 setSelectedLeague({ ...league, ...details });
 
-                const matchesData = await fetchRecentMatches(league.idLeague);
-                console.log("Fetched recent matches:", matchesData);
+                const recentMatchesData = await fetchRecentMatches(league.idLeague);
+                console.log("Fetched recent matches:", recentMatchesData);
 
-                if (matchesData && matchesData.events) {
-                    setRecentMatches(matchesData.events);
+                if (recentMatchesData && recentMatchesData[1]) {
+                    setRecentMatches(recentMatchesData[1]);
                 } else {
                     setRecentMatches([]);
+                }
+
+                const upcomingMatchesData = await fetchUpcomingMatches(league.idLeague);
+                console.log("Fetched upcoming matches:", upcomingMatchesData);
+
+                if (upcomingMatchesData && upcomingMatchesData[1]) {
+                    setUpcomingMatches(upcomingMatchesData[1]);
+                } else {
+                    setUpcomingMatches([]);
                 }
 
                 const teamsData = await fetchTeamsByLeague(league.strLeague);
@@ -87,6 +98,15 @@ const LeaguesCarousel: React.FC = () => {
                     setTeams(teamsData);
                 } else {
                     setTeams([]);
+                }
+
+                // Obtiene la tabla de posiciones si se tiene una temporada actual
+                if (details.strCurrentSeason) {
+                    const standingsData = await fetchStandings(league.idLeague, details.strCurrentSeason);
+                    console.log("Fetched standings data:", standingsData);
+                    setStandings(standingsData || []);
+                } else {
+                    setStandings([]);
                 }
             } else {
                 setError("Failed to fetch league details");
@@ -101,7 +121,9 @@ const LeaguesCarousel: React.FC = () => {
     const handleBackToList = () => {
         setSelectedLeague(null);
         setRecentMatches([]);
-        setTeams([]); 
+        setUpcomingMatches([]);
+        setTeams([]);
+        setStandings([]);
     };
 
     if (loading) {
@@ -132,15 +154,42 @@ const LeaguesCarousel: React.FC = () => {
                     <h2>Últimos Partidos</h2>
                     <div className="recent-matches">
                         {recentMatches.length > 0 ? (
-                            <ul>
+                            <ul className="matches-list">
                                 {recentMatches.map((match) => (
-                                    <li key={match.idEvent}>
-                                        {match.strEvent} - {match.dateEvent}
+                                    <li key={match.idEvent} className="match-item">
+                                        <div className="team-badge-container">
+                                            <img src={match.strHomeTeamBadge} alt="Home team badge" className="team-badge" />
+                                            <span className="score">{match.intHomeScore}</span>
+                                            <span className="event">{match.strEvent}</span>
+                                            <span className="score">{match.intAwayScore}</span> 
+                                            <img src={match.strAwayTeamBadge} alt="Away team badge" className="team-badge" />
+                                        </div>
+                                        <span className="date">{match.dateEvent}</span>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
                             <p>No recent matches available</p>
+                        )}
+                    </div>
+
+                    <h2>Próximos Partidos</h2>
+                    <div className="upcoming-matches">
+                        {upcomingMatches.length > 0 ? (
+                            <ul className="matches-list">
+                                {upcomingMatches.map((match) => (
+                                    <li key={match.idEvent} className="match-item">
+                                        <div className="team-badge-container">
+                                            <img src={match.strHomeTeamBadge} alt="Home team badge" className="team-badge" />
+                                            <span className="event">{match.strEvent}</span>
+                                            <img src={match.strAwayTeamBadge} alt="Away team badge" className="team-badge" />
+                                        </div>
+                                        <span className="date">{match.dateEvent}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No upcoming matches available</p>
                         )}
                     </div>
 
@@ -156,6 +205,40 @@ const LeaguesCarousel: React.FC = () => {
                                 )}
                             </div>
                         ))}
+                    </div>
+
+                    <h2>Tabla de Posiciones</h2>
+                    <div className="standings-table">
+                        {standings.length > 0 ? (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Logo</th>
+                                        <th>Equipo</th>
+                                        <th>Jugados</th>
+                                        <th>Ganados</th>
+                                        <th>Perdidos</th>
+                                        <th>Empatados</th>
+                                        <th>Puntos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {standings.map((team, index) => (
+                                        <tr key={index}>
+                                            <td><img src={team.strBadge} alt={team.strTeam} /></td>
+                                            <td>{team.strTeam}</td>
+                                            <td>{team.intPlayed}</td>
+                                            <td>{team.intWin}</td>
+                                            <td>{team.intLoss}</td>
+                                            <td>{team.intDraw}</td>
+                                            <td>{team.intPoints}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No standings data available</p>
+                        )}
                     </div>
                 </div>
             ) : (
