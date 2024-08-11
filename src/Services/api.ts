@@ -102,6 +102,32 @@ export const getTeamsByLeagueId = async (leagueId: string) => {
     }));
 };
 
+export const fetchUpcomingMatches = async (idLeague: string) => {
+    try {
+        const cleanedIdLeague = idLeague.trim();
+        const response = await fetch(`https://www.thesportsdb.com/api/v2/json/3/schedual/next/league/${cleanedIdLeague}`);
+        const data = await response.json();
+        console.log("Upcoming matches data:", data); // Para depuración
+        return data;
+    } catch (error) {
+        console.error("Error fetching upcoming matches:", error);
+        return null;
+    }
+};
+
+export const fetchStandings = async (leagueId: string, season: string) => {
+    try {
+        const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=${leagueId}&s=${season}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.table; // Retorna la lista de posiciones
+    } catch (error) {
+        console.error("Error fetching standings:", error);
+        return null;
+    }
+};
 
 
 
