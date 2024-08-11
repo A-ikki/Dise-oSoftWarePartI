@@ -1,24 +1,29 @@
 .container {
     padding: 20px;
     background-color: #f0f0f041;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
 }
 
 .leagues-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+    justify-content: center; /* Centra el grid en la página */
 }
 
 .league-item {
-    background-color: #6b866f; /* Gris claro */
+    background-color: #f0f0f0; /* Gris claro */
     border-radius: 8px;
     padding: 10px;
     text-align: center;
     transition: background-color 0.3s ease;
+    cursor: pointer; /* Agrega un cursor pointer para indicar que es clickeable */
 }
 
 .league-item:hover {
-    background-color: #979191; /* Gris un poco más oscuro al pasar el mouse */
+    background-color: #e0e0e0; /* Gris un poco más oscuro al pasar el mouse */
 }
 
 .league-badge {
@@ -46,10 +51,11 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+    justify-content: center; /* Centra el grid en la página */
 }
 
 .team-item {
-    background-color: #6b866f; /* Gris claro */
+    background-color: #f0f0f0; /* Gris claro */
     border-radius: 8px;
     padding: 10px;
     text-align: center;
@@ -61,7 +67,114 @@
 }
 
 .team-badge {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
+    width: 50px;
+    height: auto;
+}
+
+.team-badge-small {
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
+}
+
+.league-badge {
+    width: 100px;
+    height: auto;
+}
+
+.recent-matches {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.recent-matches-box {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.recent-matches h2 {
+    margin-bottom: 15px;
+}
+
+.recent-matches ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recent-matches li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.match-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.team-badge-container {
+    display: flex;
+    align-items: center;
+}
+
+.team-badge {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+}
+
+.score {
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+.event {
+    margin: 0 10px;
+    font-size: 16px;
+}
+
+.date {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+.standings-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Centra el contenedor de la tabla */
+    width: 100%;
+}
+
+.standings-table {
+    width: 100%;
+    max-width: 800px; /* Ajusta el tamaño según sea necesario */
+    border-collapse: collapse;
+}
+
+.standings-table th, .standings-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.standings-table th {
+    background-color: #f2f2f2;
+}
+
+.standings-table img {
+    width: 30px; /* Ajusta el tamaño según sea necesario */
+    height: 30px;
+    object-fit: contain; /* Mantiene la relación de aspecto de la imagen */
 }
