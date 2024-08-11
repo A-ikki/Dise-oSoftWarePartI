@@ -1,0 +1,67 @@
+.container {
+    padding: 20px;
+    background-color: #f0f0f041;
+}
+
+.leagues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.league-item {
+    background-color: #6b866f; /* Gris claro */
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.league-item:hover {
+    background-color: #979191; /* Gris un poco más oscuro al pasar el mouse */
+}
+
+.league-badge {
+    max-width: 100px; /* Ajusta el tamaño del logo según sea necesario */
+    max-height: 100px;
+    object-fit: cover;
+}
+
+.league-details {
+    text-align: center;
+}
+
+.back-button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: rgba(255, 255, 255, 0.541);
+    border: none;
+    border-radius: 5px;
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.team-item {
+    background-color: #6b866f; /* Gris claro */
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.team-item:hover {
+    background-color: #e0e0e0; /* Gris un poco más oscuro al pasar el mouse */
+}
+
+.team-badge {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+}

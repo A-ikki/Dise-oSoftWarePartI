@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import Header from './Components/header';
 import Sidebar from './Components/Sidebar';
+import LeaguesCarousel from './Pages/LeaguesCarousel';
+import Home from './Pages/Home'
+import Footer from './Components/Footer';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
 
 const App: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -15,14 +20,20 @@ const App: React.FC = () => {
   };
 
   return (
+    
     <div>
       <Header onMenuClick={handleMenuClick} />
       <Sidebar isOpen={isSidebarOpen} onClose={handleCloseSidebar} />
+      <Home/>
       <div className="content">
         {/* Aquí puedes añadir el contenido de tu aplicación */}
-        <h1>Aqui van la news</h1>
+   
+        <LeaguesCarousel/> 
       </div>
+      
+      <Footer/>
     </div>
+    
   );
 };
 

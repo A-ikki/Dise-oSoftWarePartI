@@ -1,0 +1,99 @@
+.team-info {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    color: #000; /* Color del texto */
+    background-color: #f9f9f9; /* Fondo del contenedor */
+}
+
+.search-form {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.search-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+    color: #000; /* Color del texto */
+    background-color: #fff; /* Fondo del input */
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.loading, .error {
+    font-size: 18px;
+    color: #ff0000; /* Color del texto de error */
+    text-align: center;
+    margin-top: 20px;
+}
+
+.retry-button {
+    padding: 10px 20px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+.retry-button:hover {
+    background-color: #0056b3;
+}
+
+.team-details {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 4px;
+    background-color: #fff; /* Fondo del contenedor de detalles del equipo */
+    color: #000; /* Color del texto */
+    text-align: left;
+}
+
+.team-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.team-name {
+    font-size: 24px;
+    margin: 0;
+    color: #000; /* Color del texto */
+}
+
+.team-badge {
+    width: 100px;
+    height: auto;
+    margin-left: 20px;
+}
+
+.team-info-section, .team-description {
+    margin-bottom: 20px;
+}
+
+.team-info-section p, .team-description p {
+    margin: 0;
+    line-height: 1.6;
+    color: #000; /* Color del texto */
+}
+
