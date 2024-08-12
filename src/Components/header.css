@@ -1,36 +1,79 @@
-/* src/components/Header.css */
+/* Header container */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .header-logo {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .header-right {
-    display: flex;
-    align-items: center;
-  }
-  
-  .header-favs {
-    margin-right: 20px;
-    cursor: pointer;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+}
+
+/* Header logo */
+.header-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Header right section */
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Favourites section */
+.header-favs {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.header-favs span {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.header-favs ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.header-favs li {
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.header-favs li:hover {
+  text-decoration: underline;
+}
+
+/* Menu section */
+.header-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.menu-icon {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 4px 0;
+  transition: background-color 0.3s ease;
+}
+
+/* Media query for showing menu when header-favs width is small */
+@media (max-width: 800px) {
   .header-menu {
-    cursor: pointer;
+    display: flex;
   }
-  
-  .menu-icon {
-    width: 25px;
-    height: 3px;
-    background-color: black;
-    margin: 4px 0;
-  }
-  
+}
+
+/* Optional: Adding a transition effect when header-favs space is small */
+.header-favs.expanded ~ .header-menu {
+  display: flex;
+}

@@ -1,13 +1,18 @@
-/* src/App.css */
-body {
-  font-family: "FANtastic-FOX-Cond";
-  color: #000000;
-
-  margin: 0;
-}
-
 .app {
   display: flex;
-  height: 100vh;
-  background-color: #1d2347;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+header {
+  flex-shrink: 0;
+}
+
+footer {
+  flex-shrink: 0;
+  margin-top: auto;
 }

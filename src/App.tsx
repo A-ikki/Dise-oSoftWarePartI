@@ -1,39 +1,21 @@
-// src/App.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import Header from './Components/header';
-import Sidebar from './Components/Sidebar';
-import LeaguesCarousel from './Pages/LeaguesCarousel';
-import Home from './Pages/Home'
+import Home from './Pages/Home';
 import Footer from './Components/Footer';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
 
 const App: React.FC = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
   const handleMenuClick = () => {
-    setSidebarOpen(true);
-  };
-
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
+    console.log('Menu clicked!');
   };
 
   return (
-    
-    <div>
+    <div className="app">
       <Header onMenuClick={handleMenuClick} />
-      <Sidebar isOpen={isSidebarOpen} onClose={handleCloseSidebar} />
-      <Home/>
-      <div className="content">
-        {/* Aquí puedes añadir el contenido de tu aplicación */}
-   
-        <LeaguesCarousel/> 
-      </div>
-      
-      <Footer/>
+      <main>
+        <Home />
+      </main>
+      <Footer />
     </div>
-    
   );
 };
 

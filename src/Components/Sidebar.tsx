@@ -13,7 +13,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const [activeView, setActiveView] = useState('home'); // 'home' será la vista predeterminada
 
-  const handleNavClick = (view) => {
+  const handleNavClick = (view:string) => {
     setActiveView(view); // Cambia la vista activa cuando se hace clic en una opción de la barra de navegación
   };
   return (
@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <ul>
           <li>Inicio</li>
           <li onClick={() => handleNavClick('home')}>Home</li>
-          <li onClick={() => handleNavClick(LeaguesCarousel)}>Ligas</li>
+          <li onClick={() => handleNavClick('leagues')}>Ligas</li>
 
   
           <li>Hoy</li>
@@ -31,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           <li>Sign In</li>
         </ul>
       </nav>
+
     </div>
   );
 };
