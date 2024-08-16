@@ -1,0 +1,27 @@
+.navbar {
+    background-color: #333; /* Fondo oscuro */
+    padding: 1rem 2rem; /* Espaciado interno */
+  }
+  
+  .navbar-container {
+    display: flex;
+    justify-content: center; /* Centra los enlaces horizontalmente */
+    gap: 2rem; /* Espaciado entre los enlaces */
+  }
+  
+  .navbar-link {
+    color: #f4f4f4; /* Color de los enlaces */
+    text-decoration: none; /* Elimina el subrayado */
+    font-size: 1.2rem; /* Tamaño de la fuente */
+    font-weight: 500; /* Negrita */
+    transition: color 0.3s ease; /* Suaviza el cambio de color */
+  }
+  
+  .navbar-link:hover {
+    color: #ffa500; /* Cambia el color en hover a un tono anaranjado */
+  }
+  
+  .navbar-link:active {
+    color: #ff4500; /* Cambia el color cuando se activa el enlace */
+  }
+  

@@ -1,20 +1,24 @@
 import React from 'react';
-import Header from './Components/header';
 import Home from './Pages/Home';
 import Footer from './Components/Footer';
+import LeaguesCarousel from './Pages/LeaguesCarousel';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import NavBar from './Components/NavBar';
 
 const App: React.FC = () => {
-  const handleMenuClick = () => {
-    console.log('Menu clicked!');
-  };
-
   return (
     <div className="app">
-      <Header onMenuClick={handleMenuClick} />
-      <main>
-        <Home />
-      </main>
-      <Footer />
+      <Router>
+        <NavBar />
+        <main>
+        <Home/>
+          <Routes>
+            <Route path="/home" element={<Home />} />
+            <Route path="/leaguesCarousel" element={<LeaguesCarousel />} />
+          </Routes>
+        </main>
+        <Footer />
+      </Router>
     </div>
   );
 };
