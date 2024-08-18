@@ -1,21 +1,37 @@
-import React from "react";
+// src/components/NavBar.tsx
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import './NavBar.css'; // Asegúrate de crear y enlazar este archivo
-
-const links = [
-  { name: "LeaguesCarousel", href: "/leaguesCarousel" },
-  { name: "Home", href: "/home" },
-];
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from '../Services/FirebaseConfi';
+import Logout from "./Logout";
+import './NavBar.css';
 
 const NavBar: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user); // Si hay un usuario, está autenticado
+    });
+
+    return () => unsubscribe(); // Limpia la suscripción cuando el componente se desmonte
+  }, []);
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {links.map((link) => (
-          <Link key={link.href} to={link.href} className="navbar-link">
-            {link.name}
-          </Link>
-        ))}
+        {isAuthenticated ? (
+          <>
+            <Link to="/leaguesCarousel" className="navbar-link">LeaguesCarousel</Link>
+            <Link to="/home" className="navbar-link">Home</Link>
+            <Logout />
+          </>
+        ) : (
+          <>
+            <Link to="/leaguesCarousel" className="navbar-link">LeaguesCarousel</Link>
+            <Link to="/login" className="navbar-link">Login</Link>
+          </>
+        )}
       </div>
     </nav>
   );

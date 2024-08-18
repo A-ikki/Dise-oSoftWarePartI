@@ -4,6 +4,8 @@ import Footer from './Components/Footer';
 import LeaguesCarousel from './Pages/LeaguesCarousel';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './Components/NavBar';
+import Login from './Components/Login';
+import Register from './Components/Register';
 
 const App: React.FC = () => {
   return (
@@ -11,10 +13,12 @@ const App: React.FC = () => {
       <Router>
         <NavBar />
         <main>
-        <Home/>
           <Routes>
+            <Route path='/' element={<Home/>} />
             <Route path="/home" element={<Home />} />
             <Route path="/leaguesCarousel" element={<LeaguesCarousel />} />
+            <Route path='/login' element={<Login/>}/>
+            <Route path='/register' element={<Register/>}/>
           </Routes>
         </main>
         <Footer />
