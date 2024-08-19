@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchEnglandLeagues, fetchTeamsByLeague, fetchStandings } from '../Services/api';
+import { fetchEnglandLeagues, fetchTeamsByLeague, fetchStandings, } from '../Services/api';
 import './LeaguesCarousel.css';
 
 interface League {
@@ -13,11 +13,18 @@ interface League {
     strDescriptionEN: string;
     strWebsite: string;
 }
-
 interface Team {
     idTeam: string;
     strTeam: string;
     strBadge: string;
+    intFormedYear: string;
+    strLeague: string;
+    strStadium: string;
+    strKeywords: string;
+    intStadiumCapacity: string;
+    strWebsite: string;
+    strDescriptionEN: string;
+    strEquipment: string;
 }
 
 interface Standing {
@@ -42,15 +49,36 @@ interface Match {
     dateEvent: string;
 }
 
+interface RecentMatch {
+    idEvent: string;
+    strEvent: string;
+    strHomeTeam: string;
+    strAwayTeam: string;
+    strHomeTeamBadge: string;
+    strAwayTeamBadge: string;
+    strTime: string;
+    dateEvent: string;
+    intHomeScore: string;
+    intAwayScore: string;
+}
+
+interface Players {
+    strThumb: string;
+    strPlayer: string;
+}
+
 const LeaguesCarousel: React.FC = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
+    const [players, setPlayers] = useState<Players[]>([]);
     const [standings, setStandings] = useState<Standing[]>([]);
     const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedLeague, setSelectedLeague] = useState<League | null>(null);
+    const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
     const [season, setSeason] = useState<string>('2024-2025'); // Temporada actualizada
+    const [recentMatches, setRecentMatches] = useState<RecentMatch[]>([]);
 
     useEffect(() => {
         const getLeaguesData = async () => {
@@ -113,8 +141,41 @@ const LeaguesCarousel: React.FC = () => {
         }
     };
 
+    const fetchRecentMatches = async (idTeam: string) => {
+        try {
+            const response = await fetch(`/api/v1/json/3/events/season.php?id=${idTeam}`);
+            const data = await response.json();
+            if (data && Array.isArray(data.results)) {
+                const recentMatches = data.results
+                    .filter((event: any) => event.strResult) // Filtra para partidos con resultado
+                    .slice(0, 5)
+                    .map((event: any) => ({
+                        idEvent: event.idEvent,
+                        strEvent: event.strEvent,
+                        strHomeTeam: event.strHomeTeam,
+                        strAwayTeam: event.strAwayTeam,
+                        strHomeTeamBadge: event.strHomeTeamBadge,
+                        strAwayTeamBadge: event.strAwayTeamBadge,
+                        strTime: event.strTime,
+                        dateEvent: event.dateEvent,
+                        intHomeScore: event.intHomeScore,
+                        intAwayScore: event.intAwayScore,
+                    }));
+                setRecentMatches(recentMatches);
+            } else {
+                setRecentMatches([]);
+            }
+        } catch (error) {
+            console.error("Error fetching recent matches:", error);
+            setRecentMatches([]);
+        }
+    };
+    
+
     const handleLeagueClick = async (league: League) => {
         setSelectedLeague(league);
+        setSelectedTeam(null); // Limpiar equipo seleccionado
+
         try {
             const teamsData = await fetchTeamsByLeague(league.strLeague);
             if (Array.isArray(teamsData)) {
@@ -122,6 +183,14 @@ const LeaguesCarousel: React.FC = () => {
                     idTeam: team.idTeam,
                     strTeam: team.strTeam,
                     strBadge: team.strBadge,
+                    intFormedYear: team.intFormedYear,
+                    strLeague: team.strLeague,
+                    strStadium: team.strStadium,
+                    strKeywords: team.strKeywords,
+                    intStadiumCapacity: team.intStadiumCapacity,
+                    strWebsite: team.strWebsite,
+                    strDescriptionEN: team.strDescriptionEN,
+                    strEquipment: team.strEquipment
                 }));
                 setTeams(teamsList);
             } else {
@@ -154,11 +223,17 @@ const LeaguesCarousel: React.FC = () => {
         }
     };
 
+    const handleTeamClick = (team: Team) => {
+        setSelectedTeam(team);
+        setPlayers([]);
+    };
+
     const handleBackToList = () => {
         setSelectedLeague(null);
         setTeams([]);
         setStandings([]);
         setUpcomingMatches([]);
+        setSelectedTeam(null);
     };
 
     if (loading) {
@@ -171,7 +246,48 @@ const LeaguesCarousel: React.FC = () => {
 
     return (
         <div className="container">
-            {selectedLeague ? (
+            {selectedTeam ? (
+                <div className="league-details">
+                    <button onClick={handleBackToList} className="back-button">Back to List</button>
+                    <h1>{selectedTeam.strTeam}</h1>
+                    {selectedTeam.strBadge && (
+                        <img src={selectedTeam.strBadge} alt={`${selectedTeam.strTeam} badge`} className="league-badge" />
+                    )}
+                    <p><strong>Liga:</strong> {selectedTeam.strLeague}</p>
+                    <p><strong>Año de Creacion:</strong> {selectedTeam.intFormedYear}</p>
+                    <p><strong>Apodo:</strong> {selectedTeam.strKeywords}</p>
+                    <p><strong>Estadio:</strong> {selectedTeam.strStadium}</p>
+                    <p><strong>Capacidad del Estadio:</strong> {selectedTeam.intStadiumCapacity}</p>
+                    <p><strong>Descripcion:</strong> {selectedTeam.strDescriptionEN}</p>
+                    {selectedTeam.strWebsite && (
+                        <p><strong>Website:</strong> <a href={`http://${selectedTeam.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedTeam.strWebsite}</a></p>
+                    )}
+                     {selectedTeam.strBadge && (
+                        <img src={selectedTeam.strEquipment} alt={`${selectedTeam.strEquipment} badge`} className="league-badge" />
+                    )}
+                    <div className="matches-container">
+                        {recentMatches.length > 0 ? (
+                            recentMatches.map((match) => (
+                                <div key={match.idEvent} className="match-item">
+                                    <div className="team-info">
+                                        <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="team-badge-small" />
+                                        <p>{match.strHomeTeam}</p>
+                                    </div>
+                                    <p>{match.strEvent}</p>
+                                    <div className="team-info">
+                                        <img src={match.strAwayTeamBadge} alt={`${match.strAwayTeam} badge`} className="team-badge-small" />
+                                        <p>{match.strAwayTeam}</p>
+                                    </div>
+                                    <p>{match.strTime}</p>
+                                    <p>{match.dateEvent}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No upcoming matches</p>
+                        )}
+                    </div>
+                </div>
+            ) : selectedLeague ? (
                 <div className="league-details">
                     <button onClick={handleBackToList} className="back-button">Back to List</button>
                     <h1>{selectedLeague.strLeague}</h1>
@@ -187,10 +303,10 @@ const LeaguesCarousel: React.FC = () => {
                     )}
 
                     <h2>Teams</h2>
-                    <div className="teams-carousel">
+                    <div className="leagues-grid">
                         {teams.length > 0 ? (
                             teams.map((team) => (
-                                <div key={team.idTeam} className="team-item">
+                                <div key={team.idTeam} className="team-item" onClick={() => handleTeamClick(team)}>
                                     {team.strBadge ? (
                                         <img src={team.strBadge} alt={`${team.strTeam} badge`} className="team-badge" />
                                     ) : (
@@ -235,19 +351,21 @@ const LeaguesCarousel: React.FC = () => {
                     </div>
 
                     <h2>Upcoming Matches</h2>
-                    <div className="upcoming-matches">
+                    <div className="matches-container">
                         {upcomingMatches.length > 0 ? (
                             upcomingMatches.map((match) => (
                                 <div key={match.idEvent} className="match-item">
-                                    <div className="match-details">
-                                        <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="team-badge-small" />  
+                                    <div className="team-info">
+                                        <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="team-badge-small" />
+                                        <p>{match.strHomeTeam}</p>
                                     </div>
                                     <p>{match.strEvent}</p>
-                                    <div className="match-details">  
+                                    <div className="team-info">
                                         <img src={match.strAwayTeamBadge} alt={`${match.strAwayTeam} badge`} className="team-badge-small" />
+                                        <p>{match.strAwayTeam}</p>
                                     </div>
-                                    <p><strong>Fecha:</strong> {match.dateEvent} <strong>- Hora:</strong> {match.strTime} </p>
-                                    
+                                    <p>{match.strTime}</p>
+                                    <p>{match.dateEvent}</p>
                                 </div>
                             ))
                         ) : (
@@ -256,11 +374,17 @@ const LeaguesCarousel: React.FC = () => {
                     </div>
                 </div>
             ) : (
-                <div className="leagues-carousel">
+                <div className="leagues-grid">
                     {leagues.map((league) => (
-                        <div key={league.idLeague} className="league-item" onClick={() => handleLeagueClick(league)}>
-                            {league.strBadge && (
+                        <div
+                            key={league.idLeague}
+                            className="league-item"
+                            onClick={() => handleLeagueClick(league)}
+                        >
+                            {league.strBadge ? (
                                 <img src={league.strBadge} alt={`${league.strLeague} badge`} className="league-badge" />
+                            ) : (
+                                <p>No badge available</p>
                             )}
                             <p>{league.strLeague}</p>
                         </div>
