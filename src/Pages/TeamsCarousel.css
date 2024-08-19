@@ -1,0 +1,90 @@
+.teams-carousel-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .teams-carousel {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 0;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .team-item {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: transform 0.2s ease;
+  }
+  
+  .team-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .team-badge {
+    max-width: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .team-details {
+    background-color: #f1f1f1;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .selected-team-badge {
+    max-width: 150px;
+    margin-bottom: 20px;
+  }
+  
+  .team-details h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+  
+  .team-details p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .team-details a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .team-details a:hover {
+    text-decoration: underline;
+  }
+  
+  .back-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .back-button:hover {
+    background-color: #0056b3;
+  }
+
+  .leagues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas por fila */
+    gap: 20px;
+    width: 100%; /* Asegura que el grid ocupe el ancho completo */
+    box-sizing: border-box; /* Asegura que padding y border se incluyan en el tamaño total */
+}
+
+.league-details {
+    text-align: center;
+}
