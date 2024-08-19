@@ -1,5 +1,4 @@
-const BASE_URL_V2 = '/api/v2/json'; // Usar la ruta relativa para el proxy
-const API_KEY = '3';
+
 
 export const fetchTeamByName = async (teamName: string) => {
     try {
@@ -89,84 +88,110 @@ export const fetchLeagueBadge = async (leagueId: string) => {
     }
 };
 
-export const fetchLeagueDetails = async (idLeague: string) => {
-    try {
-        const response = await fetch(`https://www.thesportsdb.com/api/v2/json/lookup/league/${idLeague}`, {
-            headers: {
-                'X-API-KEY': API_KEY
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        return data.leagues ? data.leagues[0] : null;
-    } catch (error) {
-        console.error("Error fetching league details:", error);
-        return null;
-    }
-};
-
-export const fetchRecentMatches = async (idLeague: string) => {
-    try {
-        const cleanedIdLeague = idLeague.trim();
-        const response = await fetch(`$https://www.thesportsdb.com/api/v2/json/schedual/previous/league/${cleanedIdLeague}`, {
-            headers: {
-                'X-API-KEY': "3"
-            }
-        });
-        const data = await response.json();
-        console.log("Recent matches data:", data); // Para depuración
-        return data;
-    } catch (error) {
-        console.error("Error fetching recent matches:", error);
-        return null;
-    }
-};
 
 export const fetchEnglandLeagues = async () => {
     try {
-        const response = await fetch('https://www.thesportsdb.com/api/v1/json/3/search_all_leagues.php?c=England');
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log('Fetched data:', data); // Imprime toda la respuesta para inspección
+        // Definir las URLs para cada país
+        const urls = [
+            'https://www.thesportsdb.com/api/v1/json/3/search_all_leagues.php?c=England',
+            'https://www.thesportsdb.com/api/v1/json/3/search_all_leagues.php?c=Spain',
+            'https://www.thesportsdb.com/api/v1/json/3/search_all_leagues.php?c=Italy'
+        ];
 
-        // Asegúrate de que la estructura es como esperas
-        if (data && data.countries) {
-            // Filtra solo las ligas de fútbol
-            const soccerLeagues = data.countries.filter((league: any) => league.strSport === 'Soccer');
-            console.log('Filtered soccer leagues:', soccerLeagues); // Imprime las ligas filtradas
-            return soccerLeagues;
-        } else {
-            console.error('No leagues data found or unexpected data structure:', data);
-            throw new Error('No leagues data found or unexpected data structure');
+        // Realizar todas las solicitudes en paralelo usando Promise.all
+        const responses = await Promise.all(urls.map(url => fetch(url)));
+
+        // Verificar si todas las respuestas son exitosas
+        const successfulResponses = responses.filter(response => response.ok);
+        if (successfulResponses.length !== responses.length) {
+            throw new Error('Some requests failed');
         }
+
+        // Parsear todas las respuestas en JSON
+        const data = await Promise.all(successfulResponses.map(response => response.json()));
+
+        // Combinar y filtrar los datos para obtener solo ligas de fútbol
+        const combinedLeagues = data.flatMap(item => {
+            return item.countries.filter((league: any) => league.strSport === 'Soccer');
+        });
+
+        // Especificar el orden deseado
+        const priorityOrder = [
+            "English Premier League",
+            "Spanish La Liga",
+            "Italian Serie A",
+            "English League Championship",
+            "Spanish La Liga 2",
+            "Italian Serie B"
+        ];
+
+        // Ordenar las ligas con las prioritarias al inicio
+        const sortedLeagues = combinedLeagues.sort((a, b) => {
+            const indexA = priorityOrder.indexOf(a.strLeague);
+            const indexB = priorityOrder.indexOf(b.strLeague);
+
+            if (indexA !== -1 && indexB === -1) {
+                return -1; // a tiene prioridad y b no, a va primero
+            } else if (indexA === -1 && indexB !== -1) {
+                return 1; // b tiene prioridad y a no, b va primero
+            } else if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB; // ambos tienen prioridad, se comparan los índices
+            } else {
+                return a.strLeague.localeCompare(b.strLeague); // ninguno tiene prioridad, se comparan alfabéticamente
+            }
+        });
+
+        console.log('Sorted soccer leagues:', sortedLeagues);
+
+        return sortedLeagues;
     } catch (error) {
-        console.error('Error fetching Spanish leagues:', error);
+        console.error('Error fetching leagues from multiple countries:', error);
         throw error;
     }
 };
 
 
-export const fetchUpcomingMatches = async (idLeague: string) => {
+
+export const fetchPlayersByTeamName = async (teamName: string) => {
     try {
-        const cleanedIdLeague = idLeague.trim();
-        const response = await fetch(`https://www.thesportsdb.com/api/v2/json/schedual/next/league/${cleanedIdLeague}`, {
-            headers: {
-                'X-API-KEY': API_KEY
-            }
-        });
+        const formattedTeamName = encodeURIComponent(teamName); // Reemplaza espacios por %20 para la URL
+        const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?t=${formattedTeamName}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
-        console.log("Upcoming matches data:", data); // Para depuración
-        return data;
+        return data.player || []; 
     } catch (error) {
-        console.error("Error fetching upcoming matches:", error);
-        return null;
+        console.error("Error fetching players data:", error);
+        return [];
     }
 };
 
+// api.ts
+export const fetchLastFiveMatches = async (idTeam: string) => {
+    try {
+        const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/eventslast.php?id=${idTeam}`);
+        const data = await response.json();
+        if (data && Array.isArray(data.results)) {
+            return data.results.map((results: any) => ({
+                idEvent: results.idEvent,
+                strEvent: results.strEvent,
+                strHomeTeam: results.strHomeTeam,
+                strAwayTeam: results.strAwayTeam,
+                strHomeTeamBadge: results.strHomeTeamBadge,
+                strAwayTeamBadge: results.strAwayTeamBadge,
+                strTime: results.strTime,
+                dateEvent: results.dateEvent,
+                intHomeScore: results.intHomeScore,
+                intAwayScore: results.intAwayScore,
+            }));
+        }
+        return [];
+    } catch (error) {
+        console.error("Error fetching last five matches:", error);
+        return [];
+    }
+};
 
 
 
