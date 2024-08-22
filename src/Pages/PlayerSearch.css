@@ -1,0 +1,138 @@
+.player-search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.player-search {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 1000px; /* Aumenta el tamaño máximo para permitir más espacio */
+    width: 100%;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input {
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 500px;
+    margin-right: 10px;
+}
+
+.search-button {
+    padding: 12px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.help-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+    color: #007bff;
+}
+
+.help-icon:hover {
+    color: #0056b3;
+}
+
+.player-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.player-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px; /* Aumenta el tamaño máximo del card para que se vea más grande */
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.player-name {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.player-image {
+    max-width: 200px; /* Aumenta el tamaño máximo de la imagen del jugador */
+    height: auto;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.player-card p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.player-description {
+    margin-top: 15px;
+    font-size: 16px; /* Aumenta el tamaño de fuente para una mejor lectura */
+    color: #555;
+    text-align: justify;
+}
+.favorites-toggle {
+    position: absolute;
+    top: 10px; /* Ajustamos la posición superior */
+    left: 50%;
+    transform: translateX(-50%); /* Centramos la estrella */
+    z-index: 10; /* Aseguramos que esté por encima de otros elementos */
+  }
+  
+  .favorite-icon-large {
+    font-size: 48px; /* Hacemos la estrella más grande */
+    color: gray;
+    transition: color 0.3s ease;
+  }
+  
+  .favorite-icon-large:hover {
+    color: gold; /* Cambia de color al pasar el cursor */
+  }
