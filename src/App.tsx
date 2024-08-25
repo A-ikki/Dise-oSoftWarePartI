@@ -19,6 +19,7 @@ const App: React.FC = () => {
             <Route path="/leaguesCarousel" element={<LeaguesCarousel />} />
             <Route path='/login' element={<Login/>}/>
             <Route path='/register' element={<Register/>}/>
+
           </Routes>
         </main>
         <Footer />

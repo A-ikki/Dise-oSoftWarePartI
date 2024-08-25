@@ -28,6 +28,7 @@ const NavBar: React.FC = () => {
           </>
         ) : (
           <>
+            <Link to="/home" className="navbar-link">Home</Link>
             <Link to="/leaguesCarousel" className="navbar-link">LeaguesCarousel</Link>
             <Link to="/login" className="navbar-link">Login</Link>
           </>

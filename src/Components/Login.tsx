@@ -1,4 +1,3 @@
-// src/components/Login.tsx
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -42,6 +41,8 @@ const Login: React.FC = () => {
         <button type="submit">Iniciar Sesión</button>
       </form>
       <p>¿No tienes una cuenta? <Link to="/register">Regístrate</Link></p>
+      <Link to="/forgot-password" className="forgot-password-link">¿Olvidaste tu contraseña?</Link>
+
 
     </div>
   );
