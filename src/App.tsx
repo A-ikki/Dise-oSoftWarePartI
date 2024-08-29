@@ -1,3 +1,4 @@
+// App.ts
 import React from 'react';
 import Home from './Pages/Home';
 import Footer from './Components/Footer';
@@ -6,6 +7,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import PlayerSearch from './Pages/PlayerSearch';
+import FavoritesList from './Pages/FavoriteList';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +22,8 @@ const App: React.FC = () => {
             <Route path="/leaguesCarousel" element={<LeaguesCarousel />} />
             <Route path='/login' element={<Login/>}/>
             <Route path='/register' element={<Register/>}/>
+            <Route path='/playerSearch' element={<PlayerSearch/>} />
+            <Route path='/favoriteList' element={<FavoritesList/>} />
 
           </Routes>
         </main>

@@ -24,6 +24,8 @@ const NavBar: React.FC = () => {
           <>
             <Link to="/leaguesCarousel" className="navbar-link">LeaguesCarousel</Link>
             <Link to="/home" className="navbar-link">Home</Link>
+            <Link to ="/playerSearch" className="navbar-link">Player search</Link>
+            <Link to = "/favoriteList" className="navbar-link">Favorites</Link>
             <Logout />
           </>
         ) : (

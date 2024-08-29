@@ -1,3 +1,4 @@
+// LeaguersCarousel.tsx
 import React, { useEffect, useState } from 'react';
 import { fetchEnglandLeagues, fetchTeamsByLeague, fetchStandings, } from '../Services/api';
 import './LeaguesCarousel.css';

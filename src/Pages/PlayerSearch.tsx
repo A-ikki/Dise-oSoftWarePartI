@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PlayerSearch.css';
+import { doc, setDoc, deleteDoc, collection, getDocs, query } from 'firebase/firestore';
+import { auth, db } from '../Services/FirebaseConfi';
 
 interface Player {
   idPlayer: string;
@@ -10,13 +12,13 @@ interface Player {
   strTeam: string;
   strThumb: string;
   strWage: string;
-  strBirthLocation: string,
-  strSide: string,
-  strPosition: string,
-  strHeight: string,
-  strWeight: string,
-  strInstagram: string,
-  strTeam2: string,
+  strBirthLocation: string;
+  strSide: string;
+  strPosition: string;
+  strHeight: string;
+  strWeight: string;
+  strInstagram: string;
+  strTeam2: string;
 }
 
 const PlayerSearch: React.FC = () => {
@@ -45,19 +47,61 @@ const PlayerSearch: React.FC = () => {
     fetchPlayer();
   }, [submittedSearchTerm]);
 
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      if (!auth.currentUser) return;
+
+      const userId = auth.currentUser.uid;
+      const favoritesRef = collection(db, 'users', userId, 'favorites');
+      const q = query(favoritesRef);
+      const querySnapshot = await getDocs(q);
+
+      const favoritesList = querySnapshot.docs.map(doc => doc.data() as Player);
+      setFavorites(favoritesList);
+    };
+
+    fetchFavorites();
+  }, [auth.currentUser]);
+
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmittedSearchTerm(searchTerm.trim());
   };
 
-  const handleAddToFavorites = (player: Player) => {
+  const addToFavorites = async (player: Player) => {
+    if (!auth.currentUser) {
+      console.error("User must be logged in to save favorites.");
+      return;
+    }
+
+    const userId = auth.currentUser.uid;
+    const playerRef = doc(db, 'users', userId, 'favorites', player.idPlayer);
+
+    await setDoc(playerRef, player);
+  };
+
+  const removeFromFavorites = async (player: Player) => {
+    if (!auth.currentUser) {
+      console.error("User must be logged in to remove favorites.");
+      return;
+    }
+
+    const userId = auth.currentUser.uid;
+    const playerRef = doc(db, 'users', userId, 'favorites', player.idPlayer);
+
+    await deleteDoc(playerRef);
+  };
+
+  const handleAddToFavorites = async (player: Player) => {
     const isFavorite = favorites.some(fav => fav.idPlayer === player.idPlayer);
     if (!isFavorite) {
+      await addToFavorites(player);
       setFavorites([...favorites, player]);
     }
   };
 
-  const handleRemoveFromFavorites = (player: Player) => {
+  const handleRemoveFromFavorites = async (player: Player) => {
+    await removeFromFavorites(player);
     setFavorites(favorites.filter(fav => fav.idPlayer !== player.idPlayer));
   };
 
@@ -176,4 +220,3 @@ const PlayerSearch: React.FC = () => {
 };
 
 export default PlayerSearch;
-
