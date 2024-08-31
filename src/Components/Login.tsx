@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import { signInWithEmailAndPassword } from 'firebase/auth';
-
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../Services/FirebaseConfi';
 import './Login.css';
 
@@ -15,6 +14,16 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // Manejar el éxito del inicio de sesión
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      // Manejar el éxito del inicio de sesión con Google
     } catch (err: any) {
       setError(err.message);
     }
@@ -41,10 +50,13 @@ const Login: React.FC = () => {
         />
         <button type="submit">Iniciar Sesión</button>
       </form>
+
+      <button onClick={handleGoogleLogin} className="google-login-button">
+        Iniciar sesión con Google
+      </button>
+
       <p>¿No tienes una cuenta? <Link to="/register">Regístrate</Link></p>
       <Link to="/forgot-password" className="forgot-password-link">¿Olvidaste tu contraseña?</Link>
-
-
     </div>
   );
 };

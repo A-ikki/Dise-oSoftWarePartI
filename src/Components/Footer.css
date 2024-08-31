@@ -1,91 +1,103 @@
 /* Footer.css */
+*{
+  box-sizing: border-box;
+}
 .footer {
-    background-color: #000000;
-    color: #fff;
-    padding: 40px 20px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-  }
-  
+  background-color: #000000;
+  color: #fff;
+  padding: 40px 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%; /* Asegúrate de que ocupe todo el ancho */
+  padding: 0 20px; /* Evita que los elementos se peguen a los bordes */
+  box-sizing: border-box; /* Asegura que padding no cause desbordamiento */
+}
+
+.footer-logo h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center; /* Centra los enlaces para evitar desbordamiento */
+  width: 100%;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.footer-links ul li a:hover {
+  color: #1e90ff;
+}
+
+.footer-social {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Añade espacio entre los iconos */
+}
+
+.footer-social a {
+  color: #fff;
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.footer-social a:hover {
+  color: #1e90ff;
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  border-top: 1px solid #444;
+  padding-top: 20px;
+  font-size: 14px;
+  width: 100%; /* Asegúrate de que ocupe todo el ancho */
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
   .footer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  
-  .footer-logo h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .footer-links ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  
-  .footer-links ul li {
-    margin-bottom: 10px;
-  }
-  
-  .footer-links ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s;
-  }
-  
-  .footer-links ul li a:hover {
-    color: #1e90ff;
-  }
-  
-  .footer-social {
-    margin-top: 20px;
-  }
-  
-  .footer-social a {
-    color: #fff;
-    font-size: 20px;
-    margin: 0 10px;
-    transition: color 0.3s;
-  }
-  
-  .footer-social a:hover {
-    color: #1e90ff;
-  }
-  
-  .footer-bottom {
-    margin-top: 30px;
-    border-top: 1px solid #444;
-    padding-top: 20px;
-    font-size: 14px;
-  }
-  
-  .footer-bottom p {
-    margin: 0;
-  }
-  
-  /* Responsive */
-  @media (min-width: 768px) {
-    .footer-container {
       flex-direction: row;
       text-align: left;
-    }
-  
-    .footer-links ul {
-      justify-content: flex-start;
-    }
-  
-    .footer-social {
-      margin-top: 0;
-    }
+      padding: 0 20px; /* Añadir padding para evitar desbordamiento en pantallas grandes */
   }
-  
+
+  .footer-links ul {
+      justify-content: flex-start; /* Alinea los enlaces a la izquierda en pantallas grandes */
+  }
+
+  .footer-social {
+      margin-top: 0;
+  }
+}

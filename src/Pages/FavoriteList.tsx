@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { auth, db } from '../Services/FirebaseConfi';
 import './FavoriteList.css';  // Asegúrate de agregar el CSS adecuado
+import LoadingSpinner from '../Components/LoadingSpinner';
 
 interface Player {
   idPlayer: string;
@@ -63,7 +64,7 @@ const FavoritesList: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner/>;
   }
 
   if (error) {
@@ -74,7 +75,7 @@ const FavoritesList: React.FC = () => {
     <div className="favorites-list-container">
       {selectedPlayer ? (
         <div className="player-details">
-          <button className="close-button" onClick={handleCloseDetails}>X</button>
+          <button className="close-button" onClick={handleCloseDetails}>Back</button>
           <h2>{selectedPlayer.strPlayer}</h2>
           {selectedPlayer.strThumb && <img src={selectedPlayer.strThumb} alt={`${selectedPlayer.strPlayer}`} className="player-image-large" />}
           <p><strong>Fecha de Nacimiento:</strong> {selectedPlayer.dateBorn}</p>

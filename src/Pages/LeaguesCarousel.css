@@ -1,10 +1,12 @@
+/* Estilo del contenedor principal */
 .container {
     padding: 20px;
-    background-color: #f0f0f041;
+    background-color: rgba(240, 240, 240, 0.25); /* Fondo semitransparente */
+    display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center; /* Centra el contenido horizontalmente */
-    grid-template-columns: repeat(4, 4fr)
+    box-sizing: border-box;
 }
 
 /* Estilo del contenedor de las ligas en forma de grid */
@@ -24,6 +26,7 @@
     text-align: center;
     transition: background-color 0.3s ease;
     cursor: pointer; /* Agrega un cursor pointer para indicar que es clickeable */
+    display: flex;
     flex-direction: column;
     align-items: center; /* Centra el contenido dentro del item */
     box-sizing: border-box; /* Asegura que padding y border se incluyan en el tamaño total */
@@ -41,6 +44,45 @@
     object-fit: cover;
 }
 
+/* Estilo del texto dentro de cada elemento de liga */
+.league-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333; /* Color del texto */
+}
+
+/* Estilo de los botones en la sección de bienvenida */
+.hero-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.back-button {
+    padding: 12px 24px;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 25px; /* Bordes redondeados */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    outline: none; /* Elimina el borde de enfoque por defecto */
+}
+
+.back-button:hover {
+    background-color: #45a049; /* Verde más oscuro al pasar el cursor */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Aumenta la sombra para un efecto de elevación */
+    transform: translateY(-2px); /* Eleva ligeramente el botón al pasar el cursor */
+}
+
+.back-button:active {
+    background-color: #3e8e41; /* Aún más oscuro al hacer clic */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Disminuye la sombra para un efecto de pulsación */
+    transform: translateY(0); /* Restaura la posición original */
+}
 /* Estilo del contenedor de detalles de la liga */
 .league-details {
     text-align: center;
@@ -56,16 +98,7 @@
     background-color: #e0e0e0; /* Gris un poco más oscuro al pasar el mouse */
 }
 
-.back-button {
-    margin-bottom: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: rgba(255, 255, 255, 0.541);
-    border: none;
-    border-radius: 5px;
-}
+
 
 .teams-carousel {
     display: grid; /* Cambiado a grid para controlar filas y columnas */

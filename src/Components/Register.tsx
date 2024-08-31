@@ -1,6 +1,6 @@
 // src/components/Register.tsx
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../Services/FirebaseConfi';
 import './Login.css'
 
@@ -14,6 +14,15 @@ const Register: React.FC = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       // Manejar el éxito del registro
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      // Manejar el éxito del inicio de sesión con Google
     } catch (err: any) {
       setError(err.message);
     }
@@ -39,6 +48,9 @@ const Register: React.FC = () => {
           required
         />
         <button type="submit">Registrarse</button>
+        <button onClick={handleGoogleLogin} className="google-login-button">
+        Registrate con Google
+      </button>
       </form>
     </div>
   );

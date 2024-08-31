@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEnglandLeagues, fetchTeamsByLeague, fetchStandings, } from '../Services/api';
 import './LeaguesCarousel.css';
+import LoadingSpinner from '../Components/LoadingSpinner';
 
 interface League {
     idLeague: string;
@@ -238,7 +239,7 @@ const LeaguesCarousel: React.FC = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
     }
 
     if (error) {

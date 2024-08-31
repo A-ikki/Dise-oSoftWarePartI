@@ -1,68 +1,115 @@
+/* Estilo del contenedor principal de la lista de favoritos */
 .favorites-list-container {
-    padding: 20px;
-  }
+  padding: 100px;
+  background-color: #f8f9fa; /* Fondo gris claro */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  max-width: 800px;
+  margin: 0 auto; /* Centra el contenedor */
+  font-family: 'Arial', sans-serif;
+  padding-bottom: 50px; /* Incrementa el espacio inferior */
+  margin-bottom: 50px; /* Espacio adicional con respecto al footer */
   
-  .player-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .player-preview {
-    cursor: pointer;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-  }
-  
-  .player-preview:hover {
-    transform: scale(1.05);
-  }
-  
-  .player-image-preview {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-  }
-  
-  .player-name-preview {
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  .player-details {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .player-image-large {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-  }
-  
-  .close-button {
-    background-color: #f00;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .close-button:hover {
-    background-color: #d00;
-  }
-  
-  .player-description {
-    font-size: 14px;
-    color: #555;
-  }
-  
+}
+
+/* Estilo del título principal */
+.favorites-list-container h2 {
+  text-align: center;
+  color: #343a40; /* Texto gris oscuro */
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Estilo del contenedor de la lista de jugadores */
+.player-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Diseño responsive */
+  gap: 20px;
+}
+
+/* Estilo de cada previsualización de jugador */
+.player-preview {
+  background-color: #ffffff; /* Blanco */
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.player-preview:hover {
+  transform: translateY(-5px); /* Efecto de elevación al pasar el cursor */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+}
+
+/* Estilo de la imagen del jugador en la previsualización */
+.player-image-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Estilo del nombre del jugador en la previsualización */
+.player-name-preview {
+  color: #495057; /* Texto gris oscuro */
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Estilo del contenedor de detalles del jugador */
+.player-details {
+  background-color: #ffffff; /* Blanco */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra para el detalle del jugador */
+}
+
+.player-details h2 {
+  text-align: center;
+  color: #343a40;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+/* Estilo de la imagen del jugador en la vista de detalles */
+.player-image-large {
+  display: block;
+  max-width: 200px;
+  margin: 0 auto 20px; /* Centra la imagen */
+  border-radius: 12px;
+}
+
+/* Estilo de las etiquetas de información */
+.player-details p {
+  font-size: 16px;
+  color: #495057;
+  margin: 10px 0;
+}
+
+.player-details strong {
+  color: #343a40;
+}
+
+
+
+/* Estilo del botón de cerrar detalles */
+.close-button {
+  padding: 10px 20px;
+  background-color: #dc3545; /* Rojo */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+  background-color: #c82333; /* Rojo más oscuro al pasar el cursor */
+}
+.close-button:focus {
+  outline: none; /* Quita el borde de enfoque */
+}
