@@ -1,4 +1,3 @@
-// LeaguersCarousel.tsx
 import React, { useEffect, useState } from 'react';
 import { fetchEnglandLeagues, fetchTeamsByLeague, fetchStandings, } from '../Services/api';
 import './LeaguesCarousel.css';
@@ -13,6 +12,7 @@ interface League {
     strCurrentSeason: string;
     intFormedYear: string;
     strDescriptionEN: string;
+    strDescriptionES?: string;
     strWebsite: string;
 }
 interface Team {
@@ -26,6 +26,7 @@ interface Team {
     intStadiumCapacity: string;
     strWebsite: string;
     strDescriptionEN: string;
+    strDescriptionES?: string;
     strEquipment: string;
 }
 
@@ -69,6 +70,76 @@ interface Players {
     strPlayer: string;
 }
 
+type TranslationKeys = 
+  'leagues' | 'loading' | 'error' | 'league' | 'yearFounded' | 'nickname' | 'stadium' | 
+  'stadiumCapacity' | 'description' | 'website' | 'teams' | 'standings' | 'logo' | 'team' | 
+  'played' | 'won' | 'drawn' | 'lost' | 'points' | 'upcomingMatches' | 'noUpcomingMatches' | 
+  'noTeamsAvailable' | 'country' | 'currentSeason' | 'noBadgeAvailable';
+
+  const translations: Record<'es' | 'en', Record<TranslationKeys, string>> = {
+    es: {
+      leagues: 'Ligas',
+      loading: 'Cargando...',
+      error: 'Error al cargar los datos',
+      league: 'Liga',
+      yearFounded: 'Año de Fundación',
+      nickname: 'Apodo',
+      stadium: 'Estadio',
+      stadiumCapacity: 'Capacidad del Estadio',
+      description: 'Descripción',
+      website: 'Sitio Web',
+      teams: 'Equipos',
+      standings: 'Clasificaciones',
+      logo: 'Logo',
+      team: 'Equipo',
+      played: 'Jugados',
+      won: 'Ganados',
+      drawn: 'Empatados',
+      lost: 'Perdidos',
+      points: 'Puntos',
+      upcomingMatches: 'Próximos Partidos',
+      noUpcomingMatches: 'No hay partidos próximos',
+      noTeamsAvailable: 'No hay equipos disponibles',
+      country: 'País',
+      currentSeason: 'Temporada Actual',
+      noBadgeAvailable: 'No hay insignia disponible'
+    },
+    en: {
+      leagues: 'Leagues',
+      loading: 'Loading...',
+      error: 'Error loading data',
+      league: 'League',
+      yearFounded: 'Year Founded',
+      nickname: 'Nickname',
+      stadium: 'Stadium',
+      stadiumCapacity: 'Stadium Capacity',
+      description: 'Description',
+      website: 'Website',
+      teams: 'Teams',
+      standings: 'Standings',
+      logo: 'Logo',
+      team: 'Team',
+      played: 'Played',
+      won: 'Won',
+      drawn: 'Drawn',
+      lost: 'Lost',
+      points: 'Points',
+      upcomingMatches: 'Upcoming Matches',
+      noUpcomingMatches: 'No upcoming matches',
+      noTeamsAvailable: 'No teams available',
+      country: 'Country',
+      currentSeason: 'Current Season',
+      noBadgeAvailable: 'No badge available'
+    }
+  };
+
+  const countryTranslations: Record<string, string> = {
+    'England': 'Inglaterra',
+    'Italy': 'Italia',
+    'Spain': 'España',
+    'Germany': 'Alemania',
+  };
+  
 const LeaguesCarousel: React.FC = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
@@ -81,6 +152,7 @@ const LeaguesCarousel: React.FC = () => {
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
     const [season, setSeason] = useState<string>('2024-2025'); // Temporada actualizada
     const [recentMatches, setRecentMatches] = useState<RecentMatch[]>([]);
+    const [language, setLanguage] = useState<'en' | 'es'>('en');
 
     useEffect(() => {
         const getLeaguesData = async () => {
@@ -98,6 +170,7 @@ const LeaguesCarousel: React.FC = () => {
                             strCurrentSeason: league.strCurrentSeason,
                             intFormedYear: league.intFormedYear,
                             strDescriptionEN: league.strDescriptionEN,
+                            strDescriptionES: league.strDescriptionES,
                             strWebsite: league.strWebsite,
                         }));
                     setLeagues(filteredLeagues);
@@ -192,6 +265,7 @@ const LeaguesCarousel: React.FC = () => {
                     intStadiumCapacity: team.intStadiumCapacity,
                     strWebsite: team.strWebsite,
                     strDescriptionEN: team.strDescriptionEN,
+                    strDescriptionES: team.strDescriptionES,
                     strEquipment: team.strEquipment
                 }));
                 setTeams(teamsList);
@@ -239,30 +313,48 @@ const LeaguesCarousel: React.FC = () => {
     };
 
     if (loading) {
-        return <LoadingSpinner/>;
+        return  <LoadingSpinner/>;
     }
 
     if (error) {
         return <div>Error: {error}</div>;
     }
 
+    const translate = (key: TranslationKeys) => {
+        return translations[language][key] || key;
+      };
+
+    const translateCountry = (country: string) => {
+        if (language === 'es') {
+          return countryTranslations[country] || country;
+        }
+        return country; 
+      };
+      
+
     return (
         <div className="container">
             {selectedTeam ? (
                 <div className="league-details">
+                    <div className="language-selector">
+                    <button onClick={() => setLanguage('en')}>English</button>
+                    <button onClick={() => setLanguage('es')}>Español</button>
+                </div>
                     <button onClick={handleBackToList} className="back-button">Back to List</button>
                     <h1>{selectedTeam.strTeam}</h1>
                     {selectedTeam.strBadge && (
                         <img src={selectedTeam.strBadge} alt={`${selectedTeam.strTeam} badge`} className="league-badge" />
                     )}
-                    <p><strong>Liga:</strong> {selectedTeam.strLeague}</p>
-                    <p><strong>Año de Creacion:</strong> {selectedTeam.intFormedYear}</p>
-                    <p><strong>Apodo:</strong> {selectedTeam.strKeywords}</p>
-                    <p><strong>Estadio:</strong> {selectedTeam.strStadium}</p>
-                    <p><strong>Capacidad del Estadio:</strong> {selectedTeam.intStadiumCapacity}</p>
-                    <p><strong>Descripcion:</strong> {selectedTeam.strDescriptionEN}</p>
+                    <p><strong>{translate('league')}:</strong> {selectedTeam.strLeague}</p>
+                    <p><strong>{translate('yearFounded')}:</strong> {selectedTeam.intFormedYear}</p>
+                    <p><strong>{translate('nickname')}:</strong> {selectedTeam.strKeywords}</p>
+                    <p><strong>{translate('stadium')}:</strong> {selectedTeam.strStadium}</p>
+                    <p><strong>{translate('stadiumCapacity')}:</strong> {selectedTeam.intStadiumCapacity}</p>
+                    <p><strong>{translate('description')}:</strong>{language === 'es' && selectedTeam.strDescriptionES
+                      ? selectedTeam.strDescriptionES
+                      : selectedTeam.strDescriptionEN}</p>
                     {selectedTeam.strWebsite && (
-                        <p><strong>Website:</strong> <a href={`http://${selectedTeam.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedTeam.strWebsite}</a></p>
+                        <p><strong>{translate('website')}:</strong> <a href={`http://${selectedTeam.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedTeam.strWebsite}</a></p>
                     )}
                      {selectedTeam.strBadge && (
                         <img src={selectedTeam.strEquipment} alt={`${selectedTeam.strEquipment} badge`} className="league-badge" />
@@ -285,26 +377,32 @@ const LeaguesCarousel: React.FC = () => {
                                 </div>
                             ))
                         ) : (
-                            <p>No upcoming matches</p>
+                            <p>{translate('noUpcomingMatches')}</p>
                         )}
                     </div>
                 </div>
             ) : selectedLeague ? (
                 <div className="league-details">
+                    <div className="language-selector">
+                    <button onClick={() => setLanguage('en')}>English</button>
+                    <button onClick={() => setLanguage('es')}>Español</button>
+                </div>
                     <button onClick={handleBackToList} className="back-button">Back to List</button>
                     <h1>{selectedLeague.strLeague}</h1>
                     {selectedLeague.strBadge && (
                         <img src={selectedLeague.strBadge} alt={`${selectedLeague.strLeague} badge`} className="league-badge" />
                     )}
-                    <p><strong>Pais:</strong> {selectedLeague.strCountry}</p>
-                    <p><strong>Año de Creacion:</strong> {selectedLeague.intFormedYear}</p>
-                    <p><strong>Temporada Actual:</strong> {selectedLeague.strCurrentSeason}</p>
-                    <p><strong>Description:</strong> {selectedLeague.strDescriptionEN}</p>
+                    <p><strong>{translate('country')}:</strong> {translateCountry(selectedLeague.strCountry)}</p>
+                    <p><strong>{translate('yearFounded')}:</strong> {selectedLeague.intFormedYear}</p>
+                    <p><strong>{translate('currentSeason')}:</strong> {selectedLeague.strCurrentSeason}</p>
+                    <p><strong>{translate('description')}:</strong>{language === 'es' && selectedLeague.strDescriptionES
+                      ? selectedLeague.strDescriptionES
+                      : selectedLeague.strDescriptionEN}</p>
                     {selectedLeague.strWebsite && (
-                        <p><strong>Website:</strong> <a href={`http://${selectedLeague.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedLeague.strWebsite}</a></p>
+                        <p><strong>{translate('website')}:</strong> <a href={`http://${selectedLeague.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedLeague.strWebsite}</a></p>
                     )}
 
-                    <h2>Teams</h2>
+                <h2>{translate('teams')}</h2>
                     <div className="leagues-grid">
                         {teams.length > 0 ? (
                             teams.map((team) => (
@@ -312,28 +410,28 @@ const LeaguesCarousel: React.FC = () => {
                                     {team.strBadge ? (
                                         <img src={team.strBadge} alt={`${team.strTeam} badge`} className="team-badge" />
                                     ) : (
-                                        <p>No badge available</p>
+                                        <p>{translate('noBadgeAvailable')}</p>
                                     )}
                                     <p>{team.strTeam}</p>
                                 </div>
                             ))
                         ) : (
-                            <p>No teams available</p>
+                            <p>{translate('noTeamsAvailable')}</p>
                         )}
                     </div>
 
-                    <h2>Standings</h2>
+                    <h2>{translate('standings')}</h2>
                     <div className="standings-container">
                         <table className="standings-table">
                             <thead>
                                 <tr>
-                                    <th>Logo</th>
-                                    <th>Equipo</th>
-                                    <th>Jugados</th>
-                                    <th>Ganados</th>
-                                    <th>Empatados</th>
-                                    <th>Perdidos</th>
-                                    <th>Puntos</th>
+                                <th>{translate('logo')}</th>
+                                <th>{translate('team')}</th>
+                                <th>{translate('played')}</th>
+                                <th>{translate('won')}</th>
+                                <th>{translate('drawn')}</th>
+                                <th>{translate('lost')}</th>
+                                <th>{translate('points')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -352,7 +450,7 @@ const LeaguesCarousel: React.FC = () => {
                         </table>
                     </div>
 
-                    <h2>Upcoming Matches</h2>
+                    <h2>{translate('upcomingMatches')}</h2>
                     <div className="matches-container">
                         {upcomingMatches.length > 0 ? (
                             upcomingMatches.map((match) => (
@@ -371,7 +469,7 @@ const LeaguesCarousel: React.FC = () => {
                                 </div>
                             ))
                         ) : (
-                            <p>No upcoming matches</p>
+                            <p>{translate('noUpcomingMatches')}</p>
                         )}
                     </div>
                 </div>
@@ -386,7 +484,7 @@ const LeaguesCarousel: React.FC = () => {
                             {league.strBadge ? (
                                 <img src={league.strBadge} alt={`${league.strLeague} badge`} className="league-badge" />
                             ) : (
-                                <p>No badge available</p>
+                                <p>{translate('noBadgeAvailable')}</p>
                             )}
                             <p>{league.strLeague}</p>
                         </div>
