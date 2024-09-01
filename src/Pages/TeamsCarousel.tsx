@@ -13,9 +13,54 @@ interface Team {
   intStadiumCapacity: string;
   strWebsite: string;
   strDescriptionEN: string;
+  strDescriptionES?: string;
   strEquipment: string;
   idLeague: string;
 }
+
+type TranslationKeys = 'teamsCarousel' | 'backToTeams' | 'formedYear' | 'idLeague' | 'stadium' |
+  'capacity' | 'description' | 'website' | 'lastMatches' | 'upcomingMatches' | 
+  'searchTeams' | 'showFavorites' | 'noMatchesAvailable' | 'noUpcomingMatchesAvailable' |
+  'changeToEnglish' | 'changeToSpanish';
+
+const translations: Record<'es' | 'en', Record<TranslationKeys, string>> = {
+  es: {
+    teamsCarousel: 'Carrusel de Equipos',
+    backToTeams: 'Volver a Equipos',
+    formedYear: 'Año de Fundación',
+    idLeague: 'ID de Liga',
+    stadium: 'Estadio',
+    capacity: 'Capacidad',
+    description: 'Descripción',
+    website: 'Sitio Web',
+    lastMatches: 'Últimos 5 Partidos',
+    upcomingMatches: 'Próximos 5 Partidos',
+    searchTeams: 'Buscar equipos...',
+    showFavorites: 'Mostrar Favoritos',
+    noMatchesAvailable: 'No hay partidos disponibles',
+    noUpcomingMatchesAvailable: 'No hay partidos próximos disponibles',
+    changeToEnglish: 'Cambiar a Inglés',
+    changeToSpanish: 'Cambiar a Español',
+  },
+  en: {
+    teamsCarousel: 'Teams Carousel',
+    backToTeams: 'Back to Teams',
+    formedYear: 'Formed Year',
+    idLeague: 'ID League',
+    stadium: 'Stadium',
+    capacity: 'Capacity',
+    description: 'Description',
+    website: 'Website',
+    lastMatches: 'Last 5 Matches',
+    upcomingMatches: 'Upcoming 5 Matches',
+    searchTeams: 'Search teams...',
+    showFavorites: 'Show Favorites',
+    noMatchesAvailable: 'No matches available',
+    noUpcomingMatchesAvailable: 'No upcoming matches available',
+    changeToEnglish: 'Change to English',
+    changeToSpanish: 'Change to Spanish',
+  },
+};
 
 interface Match {
   idEvent: string;
@@ -28,8 +73,8 @@ interface Match {
   dateEvent: string;
   intHomeScore: string;
   intAwayScore: string;
-  strStatus: string; // Añadido para el estado del partido
 }
+
 
 const TeamsCarousel: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -38,6 +83,10 @@ const TeamsCarousel: React.FC = () => {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [lastMatches, setLastMatches] = useState<Match[]>([]);
   const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
+  const [favorites, setFavorites] = useState<Team[]>([]); // Estado para favoritos
+  const [language, setLanguage] = useState<'es' | 'en'>('en'); // Idioma por defecto
+
+  const t = (key: TranslationKeys) => translations[language][key] || key;
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -61,6 +110,15 @@ const TeamsCarousel: React.FC = () => {
     );
     setFilteredTeams(results);
   }, [searchTerm, teams]);
+
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favoriteTeams') || '[]');
+    setFavorites(storedFavorites);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('favoriteTeams', JSON.stringify(favorites));
+  }, [favorites]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -121,101 +179,121 @@ const TeamsCarousel: React.FC = () => {
     setUpcomingMatches([]);
   };
 
+  const toggleFavorite = (team: Team) => {
+    const isFavorite = favorites.some(fav => fav.idTeam === team.idTeam);
+    if (isFavorite) {
+      setFavorites(favorites.filter(fav => fav.idTeam !== team.idTeam));
+    } else {
+      setFavorites([...favorites, team]);
+    }
+  };
+
+  const isFavorite = (team: Team) => {
+    return favorites.some(fav => fav.idTeam === team.idTeam);
+  };
+
+  const showFavorites = () => {
+    setFilteredTeams(favorites);
+  };
+
   return (
     <div className="teams-container">
-      <h2>Teams Carousel</h2>
+      <h2>{t('teamsCarousel')}</h2>
+      <div className="language-selector">
+        <button className="language-button" onClick={() => setLanguage('en')}>English</button>
+        <button className="language-button" onClick={() => setLanguage('es')}>Español</button>
+      </div>
       {selectedTeam ? (
         <div className="league-details">
-          <button onClick={handleBackToCarousel} className="back-button">Back to Teams</button>
-          <h2>{selectedTeam.strTeam}</h2>
+          <button onClick={handleBackToCarousel} className="back-button">{t('backToTeams')}</button>
+          <h2>
+            {selectedTeam.strTeam}
+            <span 
+              className={`favorite-icon ${isFavorite(selectedTeam) ? 'favorited' : ''}`} 
+              onClick={() => toggleFavorite(selectedTeam)}
+              style={{ cursor: 'pointer', marginLeft: '10px' }}
+            >
+              {isFavorite(selectedTeam) ? '★' : '☆'}
+            </span>
+          </h2>
           {selectedTeam.strBadge && (
             <img src={selectedTeam.strBadge} alt={`${selectedTeam.strTeam} badge`} className="selected-team-badge" />
           )}
-          <p><strong>Formed Year:</strong> {selectedTeam.intFormedYear}</p>
-          <p><strong>ID League:</strong> {selectedTeam.idLeague}</p>
-          <p><strong>Stadium:</strong> {selectedTeam.strStadium}</p>
-          <p><strong>Capacity:</strong> {selectedTeam.intStadiumCapacity}</p>
-          <p><strong>Description:</strong> {selectedTeam.strDescriptionEN}</p>
+          <p><strong>{t('formedYear')}:</strong> {selectedTeam.intFormedYear}</p>
+          <p><strong>{t('idLeague')}:</strong> {selectedTeam.idLeague}</p>
+          <p><strong>{t('stadium')}:</strong> {selectedTeam.strStadium}</p>
+          <p><strong>{t('capacity')}:</strong> {selectedTeam.intStadiumCapacity}</p>
+          <p><strong>{t('description')}</strong> {language === 'es' && selectedTeam.strDescriptionES
+                      ? selectedTeam.strDescriptionES
+                      : selectedTeam.strDescriptionEN}</p>
           {selectedTeam.strWebsite && (
-            <p><strong>Website:</strong> <a href={`http://${selectedTeam.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedTeam.strWebsite}</a></p>
+            <p><strong>{t('website')}:</strong> <a href={`http://${selectedTeam.strWebsite}`} target="_blank" rel="noopener noreferrer">{selectedTeam.strWebsite}</a></p>
           )}
 
           {/* Mostrar los últimos partidos */}
-          <h3>Last 5 Matches</h3>
+          <h3>{t('lastMatches')}</h3>
           {lastMatches.length > 0 ? (
-            <ul>
+            <ul className="matches-list">
               {lastMatches.map(match => (
                 <li key={match.idEvent}>
                   <div className="match-item">
-                    <div>
-                      <strong>{match.strEvent}</strong>
-                      <p>{match.dateEvent} - {match.strTime}</p>
-                      <p>{match.strHomeTeam} {match.intHomeScore} - {match.intAwayScore} {match.strAwayTeam}</p>
-                    </div>
-                    <div className="badges">
-                      <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="team-badge" />
-                      <img src={match.strAwayTeamBadge} alt={`${match.strAwayTeam} badge`} className="team-badge" />
-                    </div>
+                    <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="match-team-badge small" />
+                    <span>{match.strHomeTeam} {match.intHomeScore} - {match.intAwayScore} {match.strAwayTeam}</span>
+                    <img src={match.strAwayTeamBadge} alt={`${match.strAwayTeam} badge`} className="match-team-badge small" />
                   </div>
+                  <p>{match.dateEvent} - {match.strTime}</p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No matches available</p>
+            <p>{t('noMatchesAvailable')}</p>
           )}
 
           {/* Mostrar los próximos partidos */}
-          <h3>Upcoming 5 Matches</h3>
+          <h3>{t('upcomingMatches')}</h3>
           {upcomingMatches.length > 0 ? (
-            <ul>
+            <ul className="matches-list">
               {upcomingMatches.map(match => (
                 <li key={match.idEvent}>
                   <div className="match-item">
-                    <div>
-                      <strong>{match.strEvent}</strong>
-                      <p>{match.dateEvent} - {match.strTime}</p>
-                      <p>{match.strHomeTeam} vs {match.strAwayTeam}</p>
-                    </div>
-                    <div className="badges">
-                      <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="team-badge" />
-                      <img src={match.strAwayTeamBadge} alt={`${match.strAwayTeam} badge`} className="team-badge" />
-                    </div>
+                    <img src={match.strHomeTeamBadge} alt={`${match.strHomeTeam} badge`} className="match-team-badge small" />
+                    <span>{match.strHomeTeam} vs {match.strAwayTeam}</span>
+                    <img src={match.strAwayTeamBadge} alt={`${match.strAwayTeam} badge`} className="match-team-badge small" />
                   </div>
+                  <p>{match.dateEvent} - {match.strTime}</p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No upcoming matches available</p>
+            <p>{t('noUpcomingMatchesAvailable')}</p>
           )}
         </div>
       ) : (
         <>
           <input
             type="text"
-            placeholder="Search for a team..."
+            placeholder={t('searchTeams')} 
             value={searchTerm}
             onChange={handleSearch}
-            className="search-bar"
+            className="search-input"
           />
-          <div className="leagues-grid">
-            {filteredTeams.length > 0 ? (
-              filteredTeams.map((team) => (
-                <div 
-                  key={team.idTeam} 
-                  className="team-item" 
-                  onClick={() => handleTeamClick(team)} 
+          <button onClick={showFavorites} className="back-button">{t('showFavorites')}</button>
+          <div className="teams-grid">
+            {filteredTeams.map((team) => (
+              <div key={team.idTeam} className="team-card" onClick={() => handleTeamClick(team)}>
+                <img src={team.strBadge} alt={`${team.strTeam} badge`} className="team-badge" />
+                <h3>{team.strTeam}</h3>
+                <span 
+                  className={`favorite-indicator ${isFavorite(team) ? 'favorited' : ''}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(team);
+                  }}
                 >
-                  {team.strBadge ? (
-                    <img src={team.strBadge} alt={`${team.strTeam} badge`} className="team-badge" />
-                  ) : (
-                    <p>No badge available</p>
-                  )}
-                  <p>{team.strTeam}</p>
-                </div>
-              ))
-            ) : (
-              <p>No teams found</p>
-            )}
+                  {isFavorite(team) ? '★' : '☆'}
+                </span>
+              </div>
+            ))}
           </div>
         </>
       )}
