@@ -3,12 +3,14 @@ import './PlayerSearch.css';
 import { doc, setDoc, deleteDoc, collection, getDocs, query } from 'firebase/firestore';
 import { auth, db } from '../Services/FirebaseConfi';
 
+// Definición de las interfaces
 interface Player {
   idPlayer: string;
   strPlayer: string;
   dateBorn: string;
   strNationality: string;
   strDescriptionEN: string;
+  strDescriptionES?: string; // Añadido para la descripción en español
   strTeam: string;
   strThumb: string;
   strWage: string;
@@ -21,31 +23,129 @@ interface Player {
   strTeam2: string;
 }
 
+// Definición de las claves de traducción
+type TranslationKeys = 'searchPlayers' | 'enterName' | 'search' | 'showFavorites' | 'noPlayersFound' |
+  'favoritePlayers' | 'noFavoritePlayers' | 'dateOfBirth' | 'nationality' | 'team' | 
+  'selected' | 'wage' | 'birthLocation' | 'strongFoot' | 'position' | 'height' | 'weight' |
+  'removeFromFavorites' | 'addToFavorites' | 'changeToEnglish' | 'changeToSpanish' | 
+  'description' | 'instagram';
+
+const translations: Record<'es' | 'en', Record<TranslationKeys, string>> = {
+  es: {
+    searchPlayers: 'Buscar Jugadores',
+    enterName: 'Ingresa el nombre completo del jugador',
+    search: 'Buscar',
+    showFavorites: 'Mostrar Favoritos',
+    noPlayersFound: 'No se encontraron jugadores',
+    favoritePlayers: 'Jugadores Favoritos',
+    noFavoritePlayers: 'No hay jugadores favoritos',
+    dateOfBirth: 'Fecha de Nacimiento:',
+    nationality: 'Nacionalidad:',
+    team: 'Equipo:',
+    selected: 'Seleccionado:',
+    wage: 'Salario:',
+    birthLocation: 'Lugar de Nacimiento:',
+    strongFoot: 'Pierna Fuerte:',
+    position: 'Posición:',
+    height: 'Altura:',
+    weight: 'Peso:',
+    removeFromFavorites: 'Eliminar de favoritos',
+    addToFavorites: 'Agregar a favoritos',
+    changeToEnglish: 'Cambiar a Inglés',
+    changeToSpanish: 'Cambiar a Español',
+    description: 'Descripción:',
+    instagram: 'Instagram:',
+  },
+  en: {
+    searchPlayers: 'Search Players',
+    enterName: 'Enter the player\'s full name',
+    search: 'Search',
+    showFavorites: 'Show Favorites',
+    noPlayersFound: 'No players found',
+    favoritePlayers: 'Favorite Players',
+    noFavoritePlayers: 'No favorite players',
+    dateOfBirth: 'Date of Birth:',
+    nationality: 'Nationality:',
+    team: 'Team:',
+    selected: 'Selected:',
+    wage: 'Wage:',
+    birthLocation: 'Birth Location:',
+    strongFoot: 'Strong Foot:',
+    position: 'Position:',
+    height: 'Height:',
+    weight: 'Weight:',
+    removeFromFavorites: 'Remove from Favorites',
+    addToFavorites: 'Add to Favorites',
+    changeToEnglish: 'Change to English',
+    changeToSpanish: 'Change to Spanish',
+    description: 'Description:',
+    instagram: 'Instagram:',
+  },
+};
+
+// Mapeo para las traducciones de la pierna fuerte
+const sideTranslations: Record<'es' | 'en', Record<string, string>> = {
+  es: {
+    Right: 'Derecha',
+    Left: 'Izquierda',
+    Both: 'Ambas'
+  },
+  en: {
+    Right: 'Right',
+    Left: 'Left',
+    Both: 'Both'
+  }
+};
+
+// Mapeo para las traducciones de la posición
+const positionTranslations: Record<'es' | 'en', Record<string, string>> = {
+  es: {
+    Goalkeeper: 'Portero',
+    Defender: 'Defensor',
+    'Center Back': 'Defensa Central',
+    'Full Back': 'Lateral',
+    'Wing Back': 'Carrilero',
+    Sweeper: 'Líbero',
+    Midfielder: 'Centrocampista',
+    'Central Midfielder': 'Centrocampista Central',
+    'Defensive Midfielder': 'Centrocampista Defensivo',
+    'Attacking Midfielder': 'Centrocampista Ofensivo',
+    'Wide Midfielder': 'Centrocampista Extremo',
+    Forward: 'Delantero',
+    'Centre-Forward': 'Delantero Centro',
+    Winger: 'Extremo',
+    'Right Winger': 'Extremo Derecho',
+    'Left Winger': 'Extremo Izquierdo',
+    'Second Striker': 'Delantero Secundario'
+  },
+  en: {
+    Goalkeeper: 'Goalkeeper',
+    Defender: 'Defender',
+    'Center Back': 'Center Back',
+    'Full Back': 'Full Back',
+    'Wing Back': 'Wing Back',
+    Sweeper: 'Sweeper',
+    Midfielder: 'Midfielder',
+    'Central Midfielder': 'Central Midfielder',
+    'Defensive Midfielder': 'Defensive Midfielder',
+    'Attacking Midfielder': 'Attacking Midfielder',
+    'Wide Midfielder': 'Wide Midfielder',
+    Forward: 'Forward',
+    'Centre-Forward': 'Centre-Forward',
+    Winger: 'Winger',
+    'Right Winger': 'Right Winger',
+    'Left Winger': 'Left Winger',
+    'Second Striker': 'Second Striker'
+  }
+};
+
 const PlayerSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('Cristiano Ronaldo');
   const [players, setPlayers] = useState<Player[]>([]);
   const [submittedSearchTerm, setSubmittedSearchTerm] = useState<string>('Cristiano Ronaldo');
   const [favorites, setFavorites] = useState<Player[]>([]);
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchPlayer = async () => {
-      try {
-        const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${submittedSearchTerm}`);
-        const data = await response.json();
-        if (data && Array.isArray(data.player)) {
-          setPlayers(data.player);
-        } else {
-          setPlayers([]);
-        }
-      } catch (error) {
-        console.error("Error fetching players:", error);
-        setPlayers([]);
-      }
-    };
-
-    fetchPlayer();
-  }, [submittedSearchTerm]);
+  const [language, setLanguage] = useState<'es' | 'en'>('es'); // Estado para manejar el idioma
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -109,13 +209,35 @@ const PlayerSearch: React.FC = () => {
     setShowFavorites(!showFavorites);
   };
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'es' ? 'en' : 'es'); // Cambia el idioma entre español e inglés
+  };
+
+  // Obtener las traducciones para el idioma actual
+  const t = (key: TranslationKeys) => translations[language][key] || key;
+
+  // Función para traducir la pierna fuerte
+  const translateSide = (side: string) => sideTranslations[language][side] || side;
+
+  // Función para traducir la posición
+  const translatePosition = (position: string) => positionTranslations[language][position] || position;
+
   return (
     <div className="player-search-container">
+      <div className="language-toggle" onClick={toggleLanguage}>
+        <span
+          className="language-icon"
+          title={language === 'es' ? t('changeToEnglish') : t('changeToSpanish')}
+        >
+          {language === 'es' ? 'EN' : 'ES'}
+        </span>
+      </div>
+
       <div className="favorites-toggle" onClick={toggleShowFavorites}>
         <span
           className="favorite-icon-large"
           style={{ cursor: 'pointer', color: showFavorites ? 'gold' : 'gray' }}
-          title="Mostrar Favoritos"
+          title={t('showFavorites')}
         >
           ★
         </span>
@@ -123,18 +245,20 @@ const PlayerSearch: React.FC = () => {
 
       {!showFavorites ? (
         <div className="player-search">
-          <h2>Buscar Jugadores</h2>
+          <h2>{t('searchPlayers')}</h2>
           <form onSubmit={handleSearch} className="search-form">
             <div className="input-group">
               <input
                 type="text"
-                placeholder="Ingresa el nombre completo del jugador"
+                placeholder={t('enterName')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
               />
-              <button type="submit" className="search-button">Buscar</button>
-              <span className="help-icon" title="Debes poner el nombre completo del jugador que quieres buscar">?</span>
+              <button type="submit" className="search-button">
+                {t('search')}
+              </button>
+              <span className="help-icon" title={t('enterName')}>?</span>
             </div>
           </form>
 
@@ -146,72 +270,85 @@ const PlayerSearch: React.FC = () => {
                     {player.strPlayer}
                     <span
                       className="favorite-icon"
-                      title={favorites.some(fav => fav.idPlayer === player.idPlayer) ? "Eliminar de favoritos" : "Agregar a favoritos"}
-                      onClick={() =>
-                        favorites.some(fav => fav.idPlayer === player.idPlayer)
-                          ? handleRemoveFromFavorites(player)
-                          : handleAddToFavorites(player)
-                      }
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '10px',
-                        color: favorites.some(fav => fav.idPlayer === player.idPlayer) ? 'gold' : 'gray',
+                      title={favorites.some(fav => fav.idPlayer === player.idPlayer) ? t('removeFromFavorites') : t('addToFavorites')}
+                      onClick={() => {
+                        if (favorites.some(fav => fav.idPlayer === player.idPlayer)) {
+                          handleRemoveFromFavorites(player);
+                        } else {
+                          handleAddToFavorites(player);
+                        }
                       }}
+                      style={{ cursor: 'pointer', color: favorites.some(fav => fav.idPlayer === player.idPlayer) ? 'gold' : 'gray' }}
                     >
                       ★
                     </span>
                   </h3>
-                  {player.strThumb && <img src={player.strThumb} alt={`${player.strPlayer}`} className="player-image" />}
-                  <p><strong>Fecha de Nacimiento:</strong> {player.dateBorn}</p>
-                  <p><strong>Nacionalidad:</strong> {player.strNationality}</p>
-                  <p><strong>Equipo:</strong> {player.strTeam}</p>
-                  <p><strong>Seleccionado:</strong> {player.strTeam2}</p>
-                  <p><strong>Salario:</strong> {player.strWage}</p>
-                  <p><strong>Lugar de Nacimiento:</strong> {player.strBirthLocation}</p>
-                  <p><strong>Pierna Fuerte:</strong> {player.strSide}</p>
-                  <p><strong>Pocision:</strong> {player.strPosition}</p>
-                  <p><strong>Altura:</strong> {player.strHeight}</p>
-                  <p><strong>Peso:</strong> {player.strWeight}</p>
-                  <p className="player-description">{player.strDescriptionEN}</p>
+                  <div className="player-info">
+                    <img src={player.strThumb} alt={player.strPlayer} className="player-image" />
+                    <p><strong>{t('dateOfBirth')}</strong> {player.dateBorn}</p>
+                    <p><strong>{t('nationality')}</strong> {player.strNationality}</p>
+                    <p><strong>{t('team')}</strong> {player.strTeam}</p>
+                    <p><strong>{t('selected')}</strong> {player.strTeam2}</p>
+                    <p><strong>{t('wage')}</strong> {player.strWage}</p>
+                    <p><strong>{t('birthLocation')}</strong> {player.strBirthLocation}</p>
+                    <p><strong>{t('strongFoot')}</strong> {translateSide(player.strSide)}</p>
+                    <p><strong>{t('position')}</strong> {translatePosition(player.strPosition)}</p>
+                    <p><strong>{t('height')}</strong> {player.strHeight}</p>
+                    <p><strong>{t('weight')}</strong> {player.strWeight}</p>
+                    <p><strong>{t('description')}</strong> {language === 'es' && player.strDescriptionES
+                      ? player.strDescriptionES
+                      : player.strDescriptionEN}</p>
+                    <p><strong>{t('instagram')}</strong> <a href={player.strInstagram} target="_blank" rel="noopener noreferrer">{player.strInstagram}</a></p>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p>No se encontraron jugadores</p>
+            <div className="no-players-found">
+              <p>{t('noPlayersFound')}</p>
+            </div>
           )}
         </div>
       ) : (
-        <div className="favorites-section">
-          <h2>Jugadores Favoritos</h2>
+        <div className="favorites-list">
+          <h2>{t('favoritePlayers')}</h2>
           {favorites.length > 0 ? (
             <div className="player-list">
-              {favorites.map(fav => (
-                <div key={fav.idPlayer} className="player-card">
+              {favorites.map(player => (
+                <div key={player.idPlayer} className="player-card">
                   <h3 className="player-name">
-                    {fav.strPlayer}
+                    {player.strPlayer}
                     <span
                       className="favorite-icon"
-                      title="Eliminar de favoritos"
-                      onClick={() => handleRemoveFromFavorites(fav)}
-                      style={{
-                        cursor: 'pointer',
-                        marginLeft: '10px',
-                        color: 'gold',
-                      }}
+                      title={t('removeFromFavorites')}
+                      onClick={() => handleRemoveFromFavorites(player)}
+                      style={{ cursor: 'pointer', color: 'gold' }}
                     >
                       ★
                     </span>
                   </h3>
-                  {fav.strThumb && <img src={fav.strThumb} alt={`${fav.strPlayer}`} className="player-image" />}
-                  <p><strong>Fecha de Nacimiento:</strong> {fav.dateBorn}</p>
-                  <p><strong>Nacionalidad:</strong> {fav.strNationality}</p>
-                  <p><strong>Equipo:</strong> {fav.strTeam}</p>
-                  <p className="player-description">{fav.strDescriptionEN}</p>
+                  <div className="player-info">
+                    <img src={player.strThumb} alt={player.strPlayer} className="player-image" />
+                    <p><strong>{t('dateOfBirth')}</strong> {player.dateBorn}</p>
+                    <p><strong>{t('nationality')}</strong> {player.strNationality}</p>
+                    <p><strong>{t('team')}</strong> {player.strTeam}</p>
+                    <p><strong>{t('selected')}</strong> {player.strTeam2}</p>
+                    <p><strong>{t('wage')}</strong> {player.strWage}</p>
+                    <p><strong>{t('birthLocation')}</strong> {player.strBirthLocation}</p>
+                    <p><strong>{t('strongFoot')}</strong> {translateSide(player.strSide)}</p>
+                    <p><strong>{t('position')}</strong> {translatePosition(player.strPosition)}</p>
+                    <p><strong>{t('height')}</strong> {player.strHeight}</p>
+                    <p><strong>{t('weight')}</strong> {player.strWeight}</p>
+                    <p><strong>{t('description')}</strong> {language === 'es' && player.strDescriptionES
+                      ? player.strDescriptionES
+                      : player.strDescriptionEN}</p>
+                    <p><strong>{t('instagram')}</strong> <a href={player.strInstagram} target="_blank" rel="noopener noreferrer">{player.strInstagram}</a></p>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p>No hay jugadores favoritos</p>
+            <p>{t('noFavoritePlayers')}</p>
           )}
         </div>
       )}
