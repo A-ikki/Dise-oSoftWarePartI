@@ -3,14 +3,13 @@ import './PlayerSearch.css';
 import { doc, setDoc, deleteDoc, collection, getDocs, query } from 'firebase/firestore';
 import { auth, db } from '../Services/FirebaseConfi';
 
-// Definición de las interfaces
 interface Player {
   idPlayer: string;
   strPlayer: string;
   dateBorn: string;
   strNationality: string;
   strDescriptionEN: string;
-  strDescriptionES?: string; // Añadido para la descripción en español
+  strDescriptionES?: string; 
   strTeam: string;
   strThumb: string;
   strWage: string;
@@ -23,7 +22,6 @@ interface Player {
   strTeam2: string;
 }
 
-// Definición de las claves de traducción
 type TranslationKeys = 'searchPlayers' | 'enterName' | 'search' | 'showFavorites' | 'noPlayersFound' |
   'favoritePlayers' | 'noFavoritePlayers' | 'dateOfBirth' | 'nationality' | 'team' | 
   'selected' | 'wage' | 'birthLocation' | 'strongFoot' | 'position' | 'height' | 'weight' |
@@ -83,7 +81,7 @@ const translations: Record<'es' | 'en', Record<TranslationKeys, string>> = {
   },
 };
 
-// Mapeo para las traducciones de la pierna fuerte
+
 const sideTranslations: Record<'es' | 'en', Record<string, string>> = {
   es: {
     Right: 'Derecha',
@@ -97,7 +95,6 @@ const sideTranslations: Record<'es' | 'en', Record<string, string>> = {
   }
 };
 
-// Mapeo para las traducciones de la posición
 const positionTranslations: Record<'es' | 'en', Record<string, string>> = {
   es: {
     Goalkeeper: 'Portero',
@@ -213,13 +210,13 @@ const PlayerSearch: React.FC = () => {
     setLanguage(language === 'es' ? 'en' : 'es'); // Cambia el idioma entre español e inglés
   };
 
-  // Obtener las traducciones para el idioma actual
+
   const t = (key: TranslationKeys) => translations[language][key] || key;
 
-  // Función para traducir la pierna fuerte
+
   const translateSide = (side: string) => sideTranslations[language][side] || side;
 
-  // Función para traducir la posición
+
   const translatePosition = (position: string) => positionTranslations[language][position] || position;
 
   return (
@@ -357,3 +354,4 @@ const PlayerSearch: React.FC = () => {
 };
 
 export default PlayerSearch;
+
