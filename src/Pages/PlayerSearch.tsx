@@ -144,6 +144,26 @@ const PlayerSearch: React.FC = () => {
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
   const [language, setLanguage] = useState<'es' | 'en'>('es'); // Estado para manejar el idioma
 
+
+  useEffect(() => {
+    const fetchPlayer = async () => {
+      try {
+        const response = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${submittedSearchTerm}`);
+        const data = await response.json();
+        if (data && Array.isArray(data.player)) {
+          setPlayers(data.player);
+        } else {
+          setPlayers([]);
+        }
+      } catch (error) {
+        console.error("Error fetching players:", error);
+        setPlayers([]);
+      }
+    };
+    fetchPlayer();
+  }, [submittedSearchTerm]);
+
+
   useEffect(() => {
     const fetchFavorites = async () => {
       if (!auth.currentUser) return;
@@ -230,15 +250,7 @@ const PlayerSearch: React.FC = () => {
         </span>
       </div>
 
-      <div className="favorites-toggle" onClick={toggleShowFavorites}>
-        <span
-          className="favorite-icon-large"
-          style={{ cursor: 'pointer', color: showFavorites ? 'gold' : 'gray' }}
-          title={t('showFavorites')}
-        >
-          ★
-        </span>
-      </div>
+
 
       {!showFavorites ? (
         <div className="player-search">

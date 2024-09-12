@@ -1,11 +1,11 @@
 /* Estilo del contenedor principal */
 .container {
     padding: 20px;
-    background-color: rgba(240, 240, 240, 0.25); /* Fondo semitransparente */
+    background-color: rgba(240, 240, 240, 0.25);
     display: flex;
     flex-direction: column;
     width: 100%;
-    align-items: center; /* Centra el contenido horizontalmente */
+    align-items: center;
     box-sizing: border-box;
 }
 
@@ -60,38 +60,68 @@
 
 .back-button {
     padding: 12px 24px;
-    background-color: #4CAF50; /* Verde */
+    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 25px; /* Bordes redondeados */
+    border-radius: 25px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-    outline: none; /* Elimina el borde de enfoque por defecto */
+    outline: none;
 }
 
 .back-button:hover {
-    background-color: #45a049; /* Verde más oscuro al pasar el cursor */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Aumenta la sombra para un efecto de elevación */
-    transform: translateY(-2px); /* Eleva ligeramente el botón al pasar el cursor */
+    background-color: #45a049;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
 
 .back-button:active {
-    background-color: #3e8e41; /* Aún más oscuro al hacer clic */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Disminuye la sombra para un efecto de pulsación */
-    transform: translateY(0); /* Restaura la posición original */
+    background-color: #3e8e41;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
 }
+/* Selector de idioma */
+.language-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Botón de idioma */
+.language-button {
+    padding: 10px 20px;
+    background-color: #008CBA; /* Azul claro */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    outline: none;
+}
+
+.language-button:hover {
+    background-color: #007B9E; /* Azul más oscuro al pasar el cursor */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.language-button:active {
+    background-color: #006A8A; /* Azul aún más oscuro al hacer clic */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+}
+
 /* Estilo del contenedor de detalles de la liga */
 .league-details {
     text-align: center;
-}
-
-
-/* Estilo del contenedor de detalles de la liga */
-.league-details {
-    text-align: center;
+    margin-top: 20px;
 }
 
 .league-item:hover {

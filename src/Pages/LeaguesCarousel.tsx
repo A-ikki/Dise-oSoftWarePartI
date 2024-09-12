@@ -336,11 +336,12 @@ const LeaguesCarousel: React.FC = () => {
         <div className="container">
             {selectedTeam ? (
                 <div className="league-details">
+
+                    <button onClick={handleBackToList} className="back-button">Back to List</button>
                     <div className="language-selector">
                     <button onClick={() => setLanguage('en')}>English</button>
                     <button onClick={() => setLanguage('es')}>Español</button>
                 </div>
-                    <button onClick={handleBackToList} className="back-button">Back to List</button>
                     <h1>{selectedTeam.strTeam}</h1>
                     {selectedTeam.strBadge && (
                         <img src={selectedTeam.strBadge} alt={`${selectedTeam.strTeam} badge`} className="league-badge" />
@@ -383,11 +384,12 @@ const LeaguesCarousel: React.FC = () => {
                 </div>
             ) : selectedLeague ? (
                 <div className="league-details">
-                    <div className="language-selector">
-                    <button onClick={() => setLanguage('en')}>English</button>
-                    <button onClick={() => setLanguage('es')}>Español</button>
+                <button onClick={handleBackToList} className="back-button">Back to List</button>
+                <div className="language-selector">
+                    <button onClick={() => setLanguage('en')} className="language-button">English</button>
+                    <button onClick={() => setLanguage('es')} className="language-button">Español</button>
                 </div>
-                    <button onClick={handleBackToList} className="back-button">Back to List</button>
+            
                     <h1>{selectedLeague.strLeague}</h1>
                     {selectedLeague.strBadge && (
                         <img src={selectedLeague.strBadge} alt={`${selectedLeague.strLeague} badge`} className="league-badge" />

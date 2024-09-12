@@ -35,7 +35,8 @@ const NavBar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/home" className="navbar-link">Home</Link>
-        <Link to="/leaguesCarousel" className="navbar-link">LeaguesCarousel</Link>
+        <Link to="/leaguesCarousel" className="navbar-link">Leagues</Link>
+        <Link to="/teamsCarousel" className="navbar-link">Teams</Link>
 
         {user ? (
           <>

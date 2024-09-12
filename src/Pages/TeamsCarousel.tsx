@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTeamsByLeague, fetchLastFiveMatches } from '../Services/api';
 import './TeamsCarousel.css';
+import LoadingSpinner from '../Components/LoadingSpinner';
+
 
 interface Team {
   idTeam: string;
@@ -85,6 +87,8 @@ const TeamsCarousel: React.FC = () => {
   const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
   const [favorites, setFavorites] = useState<Team[]>([]); // Estado para favoritos
   const [language, setLanguage] = useState<'es' | 'en'>('en'); // Idioma por defecto
+  const [loading, setLoading] = useState<boolean>(true);
+
 
   const t = (key: TranslationKeys) => translations[language][key] || key;
 
@@ -99,6 +103,7 @@ const TeamsCarousel: React.FC = () => {
       } catch (error) {
         console.error('Error fetching teams:', error);
       }
+      setLoading(false);
     };
 
     fetchTeams();
@@ -171,6 +176,7 @@ const TeamsCarousel: React.FC = () => {
     } catch (error) {
       console.error('Error fetching matches:', error);
     }
+
   };
 
   const handleBackToCarousel = () => {
@@ -178,6 +184,10 @@ const TeamsCarousel: React.FC = () => {
     setLastMatches([]);
     setUpcomingMatches([]);
   };
+  if (loading) {
+    return  <LoadingSpinner/>;
+}
+
 
   const toggleFavorite = (team: Team) => {
     const isFavorite = favorites.some(fav => fav.idTeam === team.idTeam);

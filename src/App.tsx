@@ -9,6 +9,7 @@ import Login from './Components/Login';
 import Register from './Components/Register';
 import PlayerSearch from './Pages/PlayerSearch';
 import FavoritesList from './Pages/FavoriteList';
+import TeamsCarousel from './Pages/TeamsCarousel';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
             <Route path='/' element={<Home/>} />
             <Route path="/home" element={<Home />} />
             <Route path="/leaguesCarousel" element={<LeaguesCarousel />} />
+            <Route path="/teamsCarousel" element={<TeamsCarousel/>}/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/register' element={<Register/>}/>
             <Route path='/playerSearch' element={<PlayerSearch/>} />
